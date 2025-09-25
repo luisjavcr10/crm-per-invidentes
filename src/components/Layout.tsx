@@ -1,5 +1,6 @@
-import { Outlet, Link, useLocation } from 'react-router-dom';
+import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { routes } from '../router/routes';
+import { useAuth } from '../modules/auth/context';
 
 /**
  * Componente Layout principal con navegación y soporte para modo oscuro
@@ -7,6 +8,8 @@ import { routes } from '../router/routes';
  */
 const Layout: React.FC = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { logout, user } = useAuth();
   //const [isDarkMode, setIsDarkMode] = useState(false);
 
   // Cargar estado guardado (por defecto modo claro)
@@ -57,6 +60,14 @@ const Layout: React.FC = () => {
     return location.pathname === href;
   };
 
+  /**
+   * Función para manejar el logout
+   */
+  const handleLogout = () => {
+    logout();
+    navigate(routes.login, { replace: true });
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-black transition-colors duration-300">
       {/* Header */}
@@ -103,12 +114,18 @@ const Layout: React.FC = () => {
                 )}
               </button>*/}
               
-              <Link
-                to={routes.login}
-                className="text-sm text-gray-500 dark:text-gray-300 hover:text-gray-700 dark:hover:text-white transition-colors"
-              >
-                Cerrar Sesión
-              </Link>
+              {/* Información del usuario y botón de logout */}
+              <div className="flex items-center space-x-3">
+                <span className="text-sm text-gray-700 dark:text-gray-300">
+                  Hola, {user?.name || 'Usuario'}
+                </span>
+                <button
+                  onClick={handleLogout}
+                  className="text-sm text-gray-500 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 transition-colors font-medium"
+                >
+                  Cerrar Sesión
+                </button>
+              </div>
             </div>
           </div>
         </div>

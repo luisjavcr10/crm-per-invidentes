@@ -1,6 +1,7 @@
 import React from 'react';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import { routes } from './routes';
+import { ProtectedRoute, PublicRoute } from '../modules/auth/components';
 
 // Componentes como elementos JSX para evitar problemas de importación
 const Layout = React.lazy(() => import('../components/Layout'));
@@ -25,17 +26,21 @@ export const router = createBrowserRouter([
   {
     path: routes.login,
     element: (
-      <SuspenseWrapper>
-        <LoginPage />
-      </SuspenseWrapper>
+      <PublicRoute>
+        <SuspenseWrapper>
+          <LoginPage />
+        </SuspenseWrapper>
+      </PublicRoute>
     ),
   },
   {
     path: '/',
     element: (
-      <SuspenseWrapper>
-        <Layout />
-      </SuspenseWrapper>
+      <ProtectedRoute>
+        <SuspenseWrapper>
+          <Layout />
+        </SuspenseWrapper>
+      </ProtectedRoute>
     ),
     children: [
       {

@@ -94,8 +94,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const logout = (): void => {
     setUser(null);
     setToken(null);
+    
+    // Limpiar completamente el localStorage de datos de autenticación
     localStorage.removeItem('authToken');
     localStorage.removeItem('authUser');
+    
+    // Opcional: limpiar cualquier otra información relacionada con la sesión
+    // localStorage.clear(); // Solo si quieres limpiar todo el localStorage
   };
 
   /**
