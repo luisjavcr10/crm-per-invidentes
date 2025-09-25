@@ -14,17 +14,8 @@ interface ProtectedRouteProps {
 export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const { user, isLoading } = useAuth();
 
-  // Mostrar loading mientras se verifica la autenticación
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-[#A9C46C]"></div>
-      </div>
-    );
-  }
-
-  // Si no hay usuario autenticado, redirigir al login
-  if (!user) {
+  // Si está cargando o no hay usuario autenticado, redirigir al login
+  if (isLoading || !user) {
     return <Navigate to={routes.login} replace />;
   }
 
