@@ -1,4 +1,3 @@
-import React, { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { routes } from '../router/routes';
 
@@ -8,35 +7,38 @@ import { routes } from '../router/routes';
  */
 const Layout: React.FC = () => {
   const location = useLocation();
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  //const [isDarkMode, setIsDarkMode] = useState(false);
 
-  // Detectar preferencia del sistema y cargar estado guardado
-  useEffect(() => {
-    const savedTheme = localStorage.getItem('theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    
-    if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
-      setIsDarkMode(true);
-      document.documentElement.classList.add('dark');
-    } else {
-      setIsDarkMode(false);
-      document.documentElement.classList.remove('dark');
-    }
-  }, []);
+  // Cargar estado guardado (por defecto modo claro)
+  //useEffect(() => {
+  //  const savedTheme = localStorage.getItem('theme');
+  //  
+  //  if (savedTheme === 'dark') {
+  //    setIsDarkMode(true);
+  //    document.documentElement.classList.add('dark');
+  //  } else {
+  //    setIsDarkMode(false);
+  //    document.documentElement.classList.remove('dark');
+  //    // Asegurar que se guarde la preferencia de modo claro si no existe
+  //    if (!savedTheme) {
+  //      localStorage.setItem('theme', 'light');
+  //    }
+  //  }
+  //}, []);
 
   // Toggle modo oscuro
-  const toggleDarkMode = () => {
-    const newDarkMode = !isDarkMode;
-    setIsDarkMode(newDarkMode);
-    
-    if (newDarkMode) {
-      document.documentElement.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
-    }
-  };
+  //const toggleDarkMode = () => {
+  //  const newDarkMode = !isDarkMode;
+  //  setIsDarkMode(newDarkMode);
+  //  
+  //  if (newDarkMode) {
+  //    document.documentElement.classList.add('dark');
+  //    localStorage.setItem('theme', 'dark');
+  //  } else {
+  //    document.documentElement.classList.remove('dark');
+  //    localStorage.setItem('theme', 'light');
+  //  }
+  //};
 
   const navigationItems = [
     {
@@ -85,7 +87,7 @@ const Layout: React.FC = () => {
             {/* User Menu y Toggle Dark Mode */}
             <div className="flex items-center space-x-4">
               {/* Toggle Dark Mode */}
-              <button
+             {/**  <button
                 onClick={toggleDarkMode}
                 className="p-2 rounded-md text-gray-500 dark:text-gray-300 hover:text-gray-700 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                 aria-label="Toggle dark mode"
@@ -99,7 +101,7 @@ const Layout: React.FC = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
                   </svg>
                 )}
-              </button>
+              </button>*/}
               
               <Link
                 to={routes.login}
