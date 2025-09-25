@@ -42,9 +42,14 @@ api.interceptors.response.use(
   (error: AxiosError) => {
     // Manejo global de errores
     if (error.response?.status === 401) {
-      // Token expirado o no válido
+      // Token expirado o no válido - limpiar datos de autenticación
       localStorage.removeItem('authToken');
-      window.location.href = '/login';
+      localStorage.removeItem('authUser');
+      
+      // Redirigir al login solo si no estamos ya en la página de login
+      if (window.location.pathname !== '/login') {
+        window.location.href = '/login';
+      }
     }
     return Promise.reject(error);
   }

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AuthService } from '../services';
+import { useAuth } from '../context';
 import { routes } from '../../../router/routes';
 
 /**
@@ -10,14 +10,13 @@ import { routes } from '../../../router/routes';
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   
   // Hooks de React Router
   const navigate = useNavigate();
 
-  // Instancia del servicio de autenticación
-  const authService = new AuthService();
+  // Hook del contexto de autenticación
+  const { login, isLoading } = useAuth();
 
   /**
    * Maneja el envío del formulario de login
@@ -25,28 +24,31 @@ const LoginPage: React.FC = () => {
    */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
+    
     setError(null);
 
     try {
-      const response = await authService.login({ email, password });
+      await login({ email, password });
       
-      // Si el login es exitoso, guardar el token y redirigir
-      if (response.data.token) {
-        localStorage.setItem('authToken', response.data.token);
-        console.log('Login exitoso:', response.data);
-        
-        // Redirigir al dashboard principal
-        navigate(routes.home, { replace: true });
-      }
+      // Redirigir al dashboard principal después del login exitoso
+      navigate(routes.home, { replace: true });
     } catch (error: any) {
-      console.error('Error en el login:', error);
-      setError(
-        error.response?.data?.message || 
-        'Error al iniciar sesión. Por favor, verifica tus credenciales.'
-      );
-    } finally {
-      setIsLoading(false);
+      // Manejar diferentes tipos de errores
+      let errorMessage = 'Error al iniciar sesión';
+      
+      if (error.message) {
+        // Error del contexto de autenticación (incluye mensaje del backend)
+        errorMessage = error.message;
+      } else if (error.response?.data?.message) {
+        // Error directo de la respuesta HTTP
+        errorMessage = error.response.data.message;
+      } else if (error.response?.status === 401) {
+        errorMessage = 'Credenciales inválidas';
+      } else if (error.response?.status >= 500) {
+        errorMessage = 'Error del servidor. Intenta nuevamente.';
+      }
+      
+      setError(errorMessage);
     }
   };
 
