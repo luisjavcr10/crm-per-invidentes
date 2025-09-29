@@ -1,20 +1,31 @@
 import { usersApi } from "../api";
 import type { User, PostUser, PatchUser } from "../api/types";
 
-export class UsersService {
-  async getUsers() {
-    return usersApi.getUsers();
-  };
-  async postUser(data: PostUser):Promise<User> {
-    return usersApi.postUser(data);
-  };
+class UsersServiceClass {
+  async getUsers(): Promise<User[]> {
+    const response = await usersApi.getUsers();
+    return response.data;
+  }
+
+  async postUser(data: PostUser): Promise<User> {
+    const response = await usersApi.postUser(data);
+    return response.data;
+  }
+
   async getUser(id: string): Promise<User> {
-    return usersApi.getUser(id);
+    const response = await usersApi.getUser(id);
+    return response.data;
   }
+
   async patchUser(id: string, data: PatchUser): Promise<User> {
-    return usersApi.patchUser(id, data);
+    const response = await usersApi.patchUser(id, data);
+    return response.data;
   }
+
   async deleteUser(id: string) {
-    return usersApi.deleteUser(id);
+    const response = await usersApi.deleteUser(id);
+    return response.data;
   }
 }
+
+export const UsersService = new UsersServiceClass();

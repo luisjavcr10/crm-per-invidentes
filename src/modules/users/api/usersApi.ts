@@ -1,18 +1,18 @@
 import { api } from "../../shared/services";
 import { USERS_ENDPOINTS } from "./endpoints";
-import type { User, PostUser, PatchUser } from "./types";
+import type { PostUser, PatchUser } from "./types";
 
 export const usersApi = {
-  getUsers: async (): Promise<User[]> => {
+  getUsers: async () => {
     return api.get(USERS_ENDPOINTS.GET_USERS);
   },
-  postUser: async (data: PostUser): Promise<User> => {
+  postUser: async (data: PostUser) => {
     return api.post(USERS_ENDPOINTS.POST_USERS, data);
   },
-  getUser: async (id: string): Promise<User> => {
+  getUser: async (id: string) => {
     return api.get(USERS_ENDPOINTS.GET_USER.replace(':id', id));
   },
-  patchUser: async (id: string, data: PatchUser): Promise<User> => {
+  patchUser: async (id: string, data: PatchUser) => {
     return api.patch(USERS_ENDPOINTS.PATCH_USER.replace(':id', id), data);
   },
   deleteUser: async (id: string) => {

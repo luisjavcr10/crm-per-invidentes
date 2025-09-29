@@ -1,39 +1,30 @@
-import React, { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { UsersService } from '../services';
+import type { User } from '../api/types';
 
-/**
- * Página de gestión de usuarios con soporte para modo oscuro
- * @returns JSX.Element
- */
 const UsersPage: React.FC = () => {
+  const [users, setUsers] = useState<User[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
 
-  // Datos de ejemplo
-  const users = [
-    {
-      id: 1,
-      name: 'María González',
-      email: 'maria@example.com',
-      role: 'Administrador',
-      status: 'Activo',
-      lastLogin: '2024-01-15',
-    },
-    {
-      id: 2,
-      name: 'Carlos Rodríguez',
-      email: 'carlos@example.com',
-      role: 'Usuario',
-      status: 'Activo',
-      lastLogin: '2024-01-14',
-    },
-    {
-      id: 3,
-      name: 'Ana Martínez',
-      email: 'ana@example.com',
-      role: 'Moderador',
-      status: 'Inactivo',
-      lastLogin: '2024-01-10',
-    },
-  ];
+  const fetchUsers = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      const users = await UsersService.getUsers();
+      console.log(users);
+      setUsers(users);
+    } catch (error) {
+      setError('Error al cargar los usuarios');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
 
   const filteredUsers = users.filter(user =>
     user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -47,7 +38,7 @@ const UsersPage: React.FC = () => {
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Gestión de Usuarios</h1>
           <p className="text-gray-600 dark:text-gray-300">Administra los usuarios del sistema</p>
         </div>
-        <button className="bg-[#A9C46C] hover:bg-[#96B85A] text-white px-4 py-2 rounded-md transition-colors duration-200">
+        <button className="bg-[#A9C46C] hover:bg-[#96B85A] text-white px-4 py-1 rounded-md transition-colors duration-200">
           Nuevo Usuario
         </button>
       </div>
@@ -75,22 +66,23 @@ const UsersPage: React.FC = () => {
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
             <thead className="bg-gray-50 dark:bg-gray-800">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                  Usuario
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                  Rol
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                  Estado
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                  Último Acceso
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                  Acciones
-                </th>
+              
+               <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    Usuario
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    Rol
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    Estado
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    Telefono
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    Acciones
+                  </th>
               </tr>
             </thead>
             <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
@@ -103,21 +95,21 @@ const UsersPage: React.FC = () => {
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-[#A9C46C] bg-opacity-20 text-[#A9C46C]">
-                      {user.role}
+                    <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-[#A9C46C] bg-opacity-20 text-white">
+                      {user.userRoles[0].role.name}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                      user.status === 'Activo'
+                      user.isActive
                         ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
                         : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
                     }`}>
-                      {user.status}
+                      {user.isActive === true ? 'Activo' : 'Inactivo'}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                    {user.lastLogin}
+                    {user.phone}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <button className="text-[#A9C46C] hover:text-[#96B85A] mr-3 transition-colors">
@@ -133,9 +125,27 @@ const UsersPage: React.FC = () => {
           </table>
         </div>
         
-        {filteredUsers.length === 0 && (
+        {isLoading && (
           <div className="text-center py-8">
-            <p className="text-gray-500 dark:text-gray-400">No se encontraron usuarios</p>
+            <p className="text-gray-500 dark:text-gray-400 text-sm">Cargando...</p>
+          </div>
+        )}
+        
+        {error && (
+          <div className="text-center py-8">
+            <p className="text-red-500 dark:text-red-400 text-sm">{error}</p>
+            <button 
+              onClick={fetchUsers}
+              className="mt-2 bg-sky-400 hover:bg-sky-500 text-white px-4 py-1 rounded-md transition-colors duration-200"
+            >
+              Reintentar
+            </button>
+          </div>
+        )}
+        
+        {!isLoading && !error && filteredUsers.length === 0 && (
+          <div className="text-center py-8">
+            <p className="text-gray-500 dark:text-gray-400 text-sm">No se encontraron usuarios</p>
           </div>
         )}
       </div>
