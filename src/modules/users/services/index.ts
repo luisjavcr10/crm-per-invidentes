@@ -1,5 +1,5 @@
 import { usersApi } from "../api";
-import type { User, PostUser, PatchUser } from "../api/types";
+import type { User, PostUser, PatchUser, Role } from "../api/types";
 
 class UsersServiceClass {
   async getUsers(): Promise<User[]> {
@@ -25,6 +25,11 @@ class UsersServiceClass {
   async deleteUser(id: string) {
     const response = await usersApi.deleteUser(id);
     return response.data;
+  }
+
+  async getRoles(): Promise<Role[]> {
+    const response = await usersApi.getRoles();
+    return response.data.data;
   }
 }
 

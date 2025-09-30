@@ -18,4 +18,7 @@ export const usersApi = {
   deleteUser: async (id: string) => {
     return api.delete(USERS_ENDPOINTS.DELETE_USER.replace(':id', id));
   },
+  getRoles: async () => {
+    return api.get(USERS_ENDPOINTS.GET_ROLES);
+  },
 }

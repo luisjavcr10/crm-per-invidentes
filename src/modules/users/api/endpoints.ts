@@ -5,4 +5,6 @@ export const USERS_ENDPOINTS = {
     PATCH_USER: '/users/:id',
     DELETE_USER: '/users/:id',
 
+    GET_ROLES: '/roles',
+
 } as const;
